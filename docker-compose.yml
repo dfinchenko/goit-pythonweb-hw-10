@@ -1,0 +1,31 @@
+services:
+  postgres:
+    image: postgres:alpine
+    environment:
+      POSTGRES_USER: postgres
+      POSTGRES_PASSWORD: 567234
+      POSTGRES_DB: postgres
+    ports:
+      - '5432:5432'
+    volumes:
+      - postgres-data:/var/lib/postgresql/data
+    networks:
+      - app_network
+
+  app:
+    build: .
+    depends_on:
+      - postgres
+    environment:
+      DB_URL: 'postgresql+psycopg://postgres:567234@postgres:5432/postgres'
+    ports:
+      - '8000:8000'
+    networks:
+      - app_network
+
+volumes:
+  postgres-data:
+
+networks:
+  app_network:
+    driver: bridge
